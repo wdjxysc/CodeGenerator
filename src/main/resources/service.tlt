@@ -1,0 +1,25 @@
+package ${table.packageName}.service;
+
+import com.whty.zhxy.common.mvc.exception.impl.ServiceException;
+import com.whty.zhxy.common.mvc.dto.Pagination;
+import ${table.packageName}.bean.${table.className}DTO;
+import java.util.List;
+
+/**
+ * @author (by code tool)
+ * @Disc ${table.className} Service
+ */
+public interface ${table.className}Service{
+
+	${table.className}DTO save${table.className}(${table.className}DTO ${table.className?uncap_first}DTO) throws ServiceException;
+	
+	void update${table.className}(${table.className}DTO ${table.className?uncap_first}DTO) throws ServiceException;
+	
+	List<${table.className}DTO> list${table.className}(${table.className}DTO ${table.className?uncap_first}DTO) throws ServiceException;
+	
+	${table.className}DTO get${table.className}(long id) throws ServiceException;
+		
+	void remove${table.className}(long id) throws ServiceException;
+
+	List<${table.className}DTO> list${table.className}ForPagination(Pagination pagination , ${table.className}DTO query) throws ServiceException;
+}

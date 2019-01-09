@@ -1,0 +1,32 @@
+package ${table.packageName}.bean;
+
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * @author (by code tool)
+ * @Disc ${table.className}
+ */
+
+public class ${table.className}DTO implements Serializable{
+	
+<#assign columns=table.columns> 
+	
+<#list  columns as column>
+/**
+* ${column.description}
+*/
+private ${column.type} ${column.attributes};
+		
+</#list>
+	
+<#list  columns as column>
+public ${column.type} get${column.attributes?cap_first}() {
+	return ${column.attributes};
+}
+		
+public void set${column.attributes?cap_first}(${column.type} ${column.attributes}) {
+	this.${column.attributes} = ${column.attributes};
+}
+</#list>
+}

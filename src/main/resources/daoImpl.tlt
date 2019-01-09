@@ -1,0 +1,62 @@
+package ${table.packageName}.dao.impl;
+
+import ${table.packageName}.vo.${table.className};
+import com.whty.framework.dao.impl.BaseDaoSupport;
+import org.springframework.stereotype.Repository;
+import ${table.packageName}.dao.${table.className}Dao;
+import java.util.List;
+import java.util.Map;
+import org.apache.ibatis.session.SqlSessionFactory;
+import com.whty.framework.util.CollectionUtils;
+import com.whty.framework.util.MapUtils;
+import com.whty.framework.util.Pagination;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger; 
+
+@Repository("${table.className?uncap_first}Dao")
+public class ${table.className}DaoImpl extends BaseDaoSupport implements ${table.className}Dao{
+	private static final Logger LOGGER = LogManager.getLogger(${table.className}DaoImpl.class);
+	
+	@Override
+	public void insert${table.className}(${table.className} ${table.className?uncap_first}) throws Exception {
+		this.getSqlSession().insert(${table.className?uncap_first} + ".insert${table.className}", ${table.className?uncap_first});
+	}
+	
+	@Override
+	public int mod${table.className}(${table.className} ${table.className?uncap_first}) throws Exception {
+		return  this.getSqlSession().update(${table.className?uncap_first} + ".mod${table.className}", ${table.className?uncap_first});
+	}
+	
+	@Override
+	public ${table.className} query${table.className}(${table.className} ${table.className?uncap_first}) throws Exception {
+		return this.getSqlSession().selectOne(${table.className?uncap_first} + ".query${table.className}", ${table.className?uncap_first});
+	}
+	
+	@Override
+	public void delete${table.className}(${table.className} ${table.className?uncap_first}) throws Exception {
+		this.getSqlSession().delete(${table.className?uncap_first} + ".delete${table.className}", ${table.className?uncap_first});
+	}
+	
+	@Override
+	public List<?> queryForPagination(String namespace, Pagination page, Object queryBean) {
+		List<?> list = CollectionUtils.newArrayList();
+		try {
+			Map<String,Object> params = MapUtils.newHashMap();
+			MapUtils.putAll(params, queryBean);
+			
+			String selectCount = namespace + ".selectCount";
+			Integer count = getSqlSession().selectOne(selectCount, params);
+			if (page == null) {
+				page = new Pagination();
+			}
+			page.setTotalCount(count);
+			MapUtils.putAll(params, page);
+			
+			String selectForPagination = namespace + ".selectForPagination";
+			list = getSqlSession().selectList(selectForPagination, params);
+		} catch(Exception ex) {
+			LOGGER.error(ex.getMessage(), ex);
+		}
+		return list;
+	}
+}

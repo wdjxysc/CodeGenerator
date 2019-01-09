@@ -1,0 +1,95 @@
+package ${table.packageName}.service.impl;
+
+
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
+
+import com.whty.zhxy.common.mvc.dao.BaseDao;
+import com.whty.zhxy.common.mvc.dto.Pagination;
+import com.whty.zhxy.common.mvc.exception.impl.DAOException;
+import com.whty.zhxy.common.mvc.exception.impl.ServiceException;
+import ${table.packageName}.bean.${table.className}DTO;
+import ${table.packageName}.entity.${table.className}DO;
+import ${table.packageName}.service.${table.className}Service;
+
+
+
+/**
+ * @author (by code tool)
+ * @Disc ${table.className} ServiceImpl
+ */
+
+@Component("${table.className?uncap_first}Service")
+public class ${table.className}ServiceImpl implements ${table.className}Service{
+
+	@Resource
+    	private BaseDao baseDao;
+
+    	@Resource
+    	private JdbcTemplate jdbcTemplate;
+	
+	@Override
+	public List<${table.className}DTO> list${table.className}(${table.className}DTO ${table.className?uncap_first}DTO) throws ServiceException {
+		try {
+            		return baseDAO.list("${table.className}Mapper.selectList", ${table.className?uncap_first}DTO);
+        	} catch(DAOException ex) {
+            		throw new ServiceException("查询{table.className}列表数据异常:" + ex.getMessage(), ex);
+        	}
+	}
+	
+	@Override
+    	public void update${table.className}(${table.className}DTO ${table.className?uncap_first}DTO) throws ServiceException {
+        	try {
+            		if (${table.className?uncap_first}DTO.getId() == null) {
+                	return;
+            	}
+            		${table.className}DO ${table.className?uncap_first}DO = new ${table.className}DO();
+            		PropertyUtils.copyProperties(${table.className?uncap_first}DO, ${table.className?uncap_first}DTO);
+            		${table.className?uncap_first}DO.setGmtModify(new Date());
+            		baseDAO.update("${table.className}Mapper.updateByPrimaryKeySelective", ${table.className?uncap_first}DO);
+        	} catch(Exception ex) {
+            	throw new ServiceException("更新${table.className}数据异常:" + ex.getMessage(), ex);
+       	   }
+   	}
+
+	@Override
+    	public void remove${table.className}(long id) throws ServiceException {
+        	try {
+            		baseDAO.remove("${table.className}Mapper.deleteByPrimaryKey", id);
+        	} catch(DAOException ex) {
+           		throw new ServiceException("删除${table.className}数据异常:" + ex.getMessage(), ex);
+        	}
+    	}	
+
+	@Override
+    	public ${table.className}DTO save${table.className}(${table.className}DTO ${table.className?uncap_first}DTO) throws ServiceException {
+		try {
+            		baseDAO.save("${table.className}Mapper.insertSelective", ${table.className?uncap_first}DTO);
+        	} catch(DAOException ex) {
+           		throw new ServiceException("保存${table.className}数据异常:" + ex.getMessage(), ex);
+        	}
+            	return ${table.className?uncap_first}DTO;
+	}
+
+	@Override
+	public ${table.className}DTO get${table.className}(long id) throws ServiceException {
+		return baseDAO.get("${table.className}Mapper.selectByPrimaryKey", id);
+	}
+	
+	@Override
+	public List<${table.className}DTO> list${table.className}ForPagination(Pagination pagination,
+			${table.className}DTO query) throws ServiceException {
+		try {
+			return baseDAO.listForPagination("${table.className}Mapper", pagination,
+					query);
+		} catch (DAOException ex) {
+			throw new ServiceException("分页查询数据异常:" + ex.getMessage(), ex);
+		}
+	}
+}

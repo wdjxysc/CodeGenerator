@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="${table.className}Mapper">
+
+    <resultMap type="${table.packageName}.bean.${table.className}DTO" 
+			id="${table.className}Map">	
+		<#assign columns=table.columns> 
+	
+		<#list  columns as column>
+			<result column="${column.column}" property="${column.attributes}" jdbcType="${column.jdbcType}" />
+		</#list>
+	</resultMap>		
+	<sql id="whereClause">
+		<#list  columns as column>
+			<if test="${column.attributes} != null and ${column.attributes} != ''">
+				AND ${column.column} = #${r'{'}${column.attributes}${r'}'}
+			</if>
+		</#list>
+	</sql>	
+
+	<!-- 新增 -->
+	<insert id="insertSelective" parameterType="${table.packageName}.bean.${table.className}DTO">
+		 insert into ${table.tableName}
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+            <#list  columns as column>
+		<if test="${column.attributes} != null">
+                	${column.column},
+            	</if>
+	    </#list>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <#list  columns as column>
+	      <if test="${column.attributes} != null">
+				#${r'{'}${column.attributes},jdbcType=${column.jdbcType}${r'}'},
+              </if>
+	    </#list>
+        </trim>
+	</insert>
+
+	<!-- 更新 -->
+	<update id="updateByPrimaryKeySelective" parameterType="${table.packageName}.bean.${table.className}DTO">
+		update ${table.tableName}
+		<set>
+			<trim prefixOverrides=",">
+				<#list  columns as column>
+					<if test="${column.attributes} !=null and ${column.attributes} !=''">	
+						${column.column}=#${r'{'}${column.attributes}${r'}'}
+						<#if column_has_next>,</#if>
+					</if>
+				</#list>
+			</trim>
+		</set>
+		where ID = #${r'{'} id , jdbcType=DECIMAL ${r'}'}
+	</update>
+	
+	<!-- 查詢 -->
+	<select id="selectList" parameterType="${table.packageName}.bean.${table.className}DTO" resultMap="${table.className}Map">
+		select * from ${table.tableName}
+		where 1=1 
+		<include refid="whereClause" />
+	</select>
+	
+	<!-- 刪除 -->
+	<delete id="deleteByPrimaryKey" parameterType="long">
+			delete ${table.tableName}
+		where ID = #${r'{'}id,jdbcType=VARCHAR ${r'}'}
+	</delete>
+
+	<!-- select for pagination -->
+    <sql id="selectClause">
+        select * from ${table.tableName} order by create_time desc
+    </sql>
+	<select id="selectForPagination" parameterType="${table.packageName}.bean.${table.className}DTO" resultMap="${table.className}Map">
+        <include refid="CommonMapper.pageStart"/>
+        <include refid="selectClause"/>
+        <include refid="CommonMapper.pageEnd"/>
+    </select>
+    <select id="count" parameterType="hashmap" resultType="int">
+        select count(*) from (<include refid="selectClause"/>) a
+    </select>
+</mapper>

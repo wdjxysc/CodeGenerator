@@ -1,0 +1,15 @@
+package ${table.packageName}.dao;
+
+import ${table.packageName}.vo.${table.className};
+import com.whty.framework.dao.IBaseDao;
+
+public interface ${table.className}Dao extends IBaseDao{
+
+	void insert${table.className}(${table.className} ${table.className?uncap_first}) throws Exception;
+	
+	int mod${table.className}(${table.className} ${table.className?uncap_first}) throws Exception;
+	
+	${table.className} query${table.className}(${table.className} ${table.className?uncap_first}) throws Exception;
+	
+	void delete${table.className}(${table.className} ${table.className?uncap_first}) throws Exception;
+}
