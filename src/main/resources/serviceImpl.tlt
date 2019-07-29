@@ -29,7 +29,7 @@ import ${table.packageName}.service.${table.className}Service;
 public class ${table.className}ServiceImpl implements ${table.className}Service{
 
 	@Resource
-    	private BaseDao baseDao;
+    	private BaseDao baseDAO;
 
     	@Resource
     	private JdbcTemplate jdbcTemplate;
@@ -51,7 +51,7 @@ public class ${table.className}ServiceImpl implements ${table.className}Service{
             	}
             		${table.className}DO ${table.className?uncap_first}DO = new ${table.className}DO();
             		PropertyUtils.copyProperties(${table.className?uncap_first}DO, ${table.className?uncap_first}DTO);
-            		${table.className?uncap_first}DO.setGmtModify(new Date());
+            		${table.className?uncap_first}DO.setGmtModified(new Date());
             		baseDAO.update("${table.className}Mapper.updateByPrimaryKeySelective", ${table.className?uncap_first}DO);
         	} catch(Exception ex) {
             	throw new ServiceException("更新${table.className}数据异常:" + ex.getMessage(), ex);

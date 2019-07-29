@@ -32,21 +32,21 @@ public class StartGen
         // GenJavaFile.genJavaFile(XMLUtils.loadXML("D://t_template_value.xml"));
 
         // 表名，类名，包名
-        String tableName = "t_user";
+        String tableName = "t_ta_attendance_leave_detail";
         System.out.println("读取表信息:" + tableName);
 
         Table table = new Table();
         table.setTableName(tableName);
-        table.setClassName("User");
-        table.setPackageName("com.rc.orange.service.login");
+        table.setClassName("TaAttendanceLeaveDetail");
+        table.setPackageName("com.whty.zhxy.service.taAttendanceLeave");
         List<Column> temp = new ArrayList<Column>();
         Class.forName("com.mysql.jdbc.Driver");// 指定连接类型
        // Connection conn = DriverManager.getConnection("jdbc:mysql://39.104.73.79/shangli",
         //    "shangli", "whtyEdu@123");// 获取连接
-//        Connection conn = DriverManager.getConnection("jdbc:mysql://39.104.73.79/zhxy_app",
-//         "zhxy", "pass4zhxy");//获取连接
-        Connection conn = DriverManager.getConnection("jdbc:mysql://45.78.52.19/injoker_orange",
-                "wdj", "xysc");//获取连接
+        Connection conn = DriverManager.getConnection("jdbc:mysql://39.104.73.79/zhxy_app",
+         "zhxy", "pass4zhxy");//获取连接
+//        Connection conn = DriverManager.getConnection("jdbc:mysql://45.78.52.19/injoker_orange",
+//                "wdj", "xysc");//获取连接
         PreparedStatement ps = conn.prepareStatement(
             "select column_name,data_type,column_comment from information_schema.columns where table_name = '"
                                                      + tableName + "'");// 准备执行语句
@@ -55,51 +55,45 @@ public class StartGen
         {
             Column tmepColumn = new Column();
             tmepColumn.setColumn(rs.getString("column_name"));
-            if (rs.getString("data_type").equals("bigint"))
-            {
-                tmepColumn.setType("Long");
-            }
-            else if (rs.getString("data_type").equals("varchar"))
-            {
-                tmepColumn.setType("String");
-            }
-            else if (rs.getString("data_type").equals("datetime")||"timestamp".equals(rs.getString("data_type")))
-            {
-                tmepColumn.setType("Date");
-            } else if (rs.getString("data_type").equals("tinyint"))
-            {
-                tmepColumn.setType("boolean");
-            }
-            else
-            {
-                tmepColumn.setType(rs.getString("data_type"));
+            switch (rs.getString("data_type")) {
+                case "bigint":
+                    tmepColumn.setType("Long");
+                    break;
+                case "varchar":
+                    tmepColumn.setType("String");
+                    break;
+                case "datetime":
+                case "timestamp":
+                    tmepColumn.setType("Date");
+                    break;
+                case "tinyint":
+                    tmepColumn.setType("boolean");
+                    break;
+                default:
+                    tmepColumn.setType(rs.getString("data_type"));
+                    break;
             }
 
-            
-            
-            if (rs.getString("data_type").equals("bigint"))
-            {
-                tmepColumn.setJdbcType("DECIMAL");
-            }
-            else if (rs.getString("data_type").equals("varchar"))	
-            {
-                tmepColumn.setJdbcType("VARCHAR");
-            }
-            else if (rs.getString("data_type").equals("int"))
-            {
-                tmepColumn.setJdbcType("DECIMAL");
-            }
-            else if (rs.getString("data_type").equals("datetime"))
-            {
-                tmepColumn.setJdbcType("TIMESTAMP");
-            }
-            else if (rs.getString("data_type").equals("date"))
-            {
-                tmepColumn.setJdbcType("TIMESTAMP");
-            }
-            else
-            {
-                tmepColumn.setJdbcType(rs.getString("data_type").toUpperCase());
+
+            switch (rs.getString("data_type")) {
+                case "bigint":
+                    tmepColumn.setJdbcType("DECIMAL");
+                    break;
+                case "varchar":
+                    tmepColumn.setJdbcType("VARCHAR");
+                    break;
+                case "int":
+                    tmepColumn.setJdbcType("DECIMAL");
+                    break;
+                case "datetime":
+                    tmepColumn.setJdbcType("TIMESTAMP");
+                    break;
+                case "date":
+                    tmepColumn.setJdbcType("TIMESTAMP");
+                    break;
+                default:
+                    tmepColumn.setJdbcType(rs.getString("data_type").toUpperCase());
+                    break;
             }
 
             /*
